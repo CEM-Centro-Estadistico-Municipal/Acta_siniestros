@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Acta de Siniestros Viales · Esquina</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');
+:root {
+  --bg:#f4f6fb; --surface:#ffffff; --surface2:#f0f2f8; --border:#dde1ef;
+  --accent:#2563eb; --accent-dim:#dbeafe;
+  --green:#16a34a; --green-dim:#dcfce7;
+  --red:#dc2626; --red-dim:#fee2e2;
+  --amber:#d97706; --amber-dim:#fef3c7;
+  --purple:#6d28d9; --purple-dim:#ede9fe;
+  --teal:#0d9488; --teal-dim:#ccfbf1;
+  --text:#1e2235; --text2:#4b5070; --text3:#9399b2;
+  --mono:'DM Mono',monospace; --sans:'DM Sans',sans-serif; --r:10px;
+  --shadow:0 1px 4px rgba(0,0,0,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:56px;}
+
+.hdr{background:var(--red);padding:14px 16px;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.hdr-top{display:flex;align-items:center;gap:10px;}
+.hdr-badge{background:rgba(255,255,255,.22);color:#fff;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:4px;letter-spacing:.06em;}
+.hdr-title{font-size:15px;font-weight:600;color:#fff;}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,.75);font-family:var(--mono);margin-top:3px;}
+
+/* CONFIG TÉCNICA */
+.cfg-tecnica{margin:14px;background:var(--surface);border:2px solid var(--amber);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);}
+.cfg-tecnica-mini{margin:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow);}
+.cfg-mini-lbl{font-family:var(--mono);font-size:11px;color:var(--text3);}
+.cfg-mini-ok{color:var(--green);margin-left:6px;font-weight:600;}
+.cfg-edit-btn{font-family:var(--mono);font-size:11px;color:var(--text3);background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:4px 10px;cursor:pointer;}
+.cfg-title{font-family:var(--mono);font-size:11px;color:var(--amber);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.cfg-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.cfg-lbl{font-size:12px;color:var(--text2);min-width:80px;}
+.cfg-inp{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:12px;padding:6px 10px;outline:none;height:34px;}
+.cfg-inp:focus{border-color:var(--amber);}
+.cfg-note{font-size:11px;color:var(--text3);margin-top:8px;line-height:1.5;font-family:var(--mono);}
+
+/* ACTUANTES */
+.actuantes{margin:14px;background:var(--surface);border:2px solid var(--teal);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
+.actuantes-hdr{background:var(--teal-dim);border-bottom:2px solid var(--teal);padding:10px 14px;display:flex;align-items:center;gap:8px;}
+.actuantes-lbl{font-family:var(--mono);font-size:11px;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;font-weight:500;}
+.act-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.act-field{padding:10px 14px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);}
+.act-field:nth-child(2n){border-right:none;}
+.act-field:nth-last-child(-n+2){border-bottom:none;}
+.act-field-lbl{font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:4px;}
+.act-inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:var(--sans);font-size:13px;padding:5px 8px;outline:none;}
+.act-inp:focus{border-color:var(--teal);}
+
+/* SECCIONES */
+.sec{margin:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
+.sec.red{border-color:var(--red);}
+.sec.amber{border-color:var(--amber);}
+.sec.purple{border-color:var(--purple);}
+.sec-hdr{padding:10px 14px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.sec.red .sec-hdr{background:var(--red-dim);border-bottom-color:var(--red);}
+.sec.amber .sec-hdr{background:var(--amber-dim);border-bottom-color:var(--amber);}
+.sec.purple .sec-hdr{background:var(--purple-dim);border-bottom-color:var(--purple);}
+.sec-hdr-left{display:flex;align-items:center;gap:8px;}
+.sec-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sec-lbl{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;}
+.sec.red .sec-lbl{color:var(--red);}
+.sec.amber .sec-lbl{color:var(--amber);}
+.sec.purple .sec-lbl{color:var(--purple);}
+
+.field{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;min-height:50px;}
+.field:last-child{border-bottom:none;}
+.field.col{flex-direction:column;align-items:stretch;gap:6px;}
+.field-lbl{font-size:13px;color:var(--text);flex:1;line-height:1.3;}
+.field-inp{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--sans);font-size:13px;padding:7px 10px;outline:none;width:100%;}
+.field-inp:focus{border-color:var(--accent);}
+.field-inp.short{width:150px;}
+textarea.field-inp{resize:vertical;min-height:70px;}
+
+.tg-wrap{display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap;}
+.tg-btn{min-width:42px;height:32px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:12px;font-family:var(--mono);font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;-webkit-user-select:none;user-select:none;padding:0 8px;}
+.tg-btn.si{background:var(--green-dim);border-color:var(--green);color:var(--green);}
+.tg-btn.no{background:var(--red-dim);border-color:var(--red);color:var(--red);}
+.sel-inp{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--sans);font-size:12px;padding:5px 8px;outline:none;height:32px;}
+.sel-inp:focus{border-color:var(--accent);}
+
+.chk-grid{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0;}
+.chk-item{display:flex;align-items:center;gap:5px;cursor:pointer;-webkit-user-select:none;user-select:none;}
+.chk-box{width:18px;height:18px;border-radius:4px;border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s;}
+.chk-box.on{background:var(--accent-dim);border-color:var(--accent);}
+.chk-box.on::after{content:'✓';font-size:11px;color:var(--accent);font-weight:700;}
+.chk-lbl{font-size:12px;color:var(--text2);}
+
+.veh-block{margin:14px;background:var(--surface);border:2px solid var(--red);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
+.veh-hdr{background:var(--red);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
+.veh-hdr-lbl{font-family:var(--mono);font-size:12px;color:#fff;font-weight:500;letter-spacing:.06em;}
+.veh-del{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:5px;color:#fff;font-size:11px;padding:3px 10px;cursor:pointer;font-family:var(--mono);}
+.cond-block{border-top:2px dashed var(--red);background:var(--red-dim);}
+.cond-lbl{padding:8px 14px;font-family:var(--mono);font-size:10px;color:var(--red);text-transform:uppercase;letter-spacing:.08em;}
+
+.btn-add-veh{background:var(--red-dim);border:2px dashed var(--red);color:var(--red);height:44px;border-radius:var(--r);width:calc(100% - 28px);margin:0 14px 14px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);}
+.actions{margin:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.btn{height:48px;border-radius:var(--r);border:none;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .12s;}
+.btn:active{opacity:.8;}
+.btn-save{background:var(--accent);color:#fff;grid-column:1/-1;}
+.btn-clear{background:var(--surface);border:1px solid var(--border);color:var(--text2);}
+.btn-export{background:var(--green-dim);border:1px solid var(--green);color:var(--green);}
+
+.log-wrap{margin:14px;}
+.log-title{font-family:var(--mono);font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.log-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow);}
+.chips{display:flex;flex-wrap:wrap;gap:4px;flex:1;}
+.chip{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid var(--border);color:var(--text2);background:var(--surface2);}
+.chip.r{background:var(--red-dim);border-color:var(--red);color:var(--red);}
+.chip.g{background:var(--green-dim);border-color:var(--green);color:var(--green);}
+.chip.a{background:var(--amber-dim);border-color:var(--amber);color:var(--amber);}
+.chip.b{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);}
+.chip.t{background:var(--teal-dim);border-color:var(--teal);color:var(--teal);}
+.del-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:10px 22px;font-size:13px;font-weight:500;color:var(--text);transition:transform .3s cubic-bezier(.34,1.56,.64,1);z-index:100;white-space:nowrap;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.12);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--green);color:var(--green);}
+.toast.err{border-color:var(--red);color:var(--red);}
+
+.stats{margin:0 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;box-shadow:var(--shadow);}
+.st-item{text-align:center;}
+.st-val{font-family:var(--mono);font-size:22px;font-weight:500;}
+.st-val.r{color:var(--red);} .st-val.a{color:var(--amber);} .st-val.b{color:var(--accent);}
+.st-lbl{font-size:10px;color:var(--text3);margin-top:2px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <span class="hdr-badge">TRÁNSITO</span>
+    <span class="hdr-title">Acta de Siniestros Viales · Esquina</span>
+  </div>
+  <div class="hdr-sub" id="hdr-date">cargando...</div>
+</div>
+
+<!-- CONFIGURACIÓN TÉCNICA: solo URL, se oculta tras guardar -->
+<div class="cfg-tecnica" id="cfg-panel">
+  <div class="cfg-title">⚙ Configuración técnica — solo una vez por dispositivo</div>
+  <div class="cfg-row">
+    <span class="cfg-lbl">URL Script</span>
+    <input class="cfg-inp" id="cfg-url" placeholder="URL del Apps Script — la provee el supervisor">
+  </div>
+  <button class="btn btn-save" style="height:38px;margin-top:6px;font-size:13px;border-radius:8px;" onclick="guardarConfig()">Guardar URL</button>
+  <div class="cfg-note">Una vez guardada no hay que volver a tocarla. Los datos de inspector y secretario se completan en cada acta.</div>
+</div>
+
+<!-- ESTADO MINI cuando ya está configurada -->
+<div class="cfg-tecnica-mini" id="cfg-mini" style="display:none;">
+  <span class="cfg-mini-lbl">Script<span class="cfg-mini-ok">✓ configurado</span></span>
+  <button class="cfg-edit-btn" onclick="editarConfig()">Cambiar URL</button>
+</div>
+
+<!-- STATS -->
+<div class="stats" style="margin-top:14px;">
+  <div class="st-item"><div class="st-val r" id="st-total">0</div><div class="st-lbl">Actas</div></div>
+  <div class="st-item"><div class="st-val a" id="st-heridos">0</div><div class="st-lbl">c/ Heridos</div></div>
+  <div class="st-item"><div class="st-val b" id="st-veh">0</div><div class="st-lbl">Vehículos</div></div>
+</div>
+
+<!-- ACTUANTES: siempre visible, cambia por acta (NO se limpia con limpiar()) -->
+<div class="actuantes" style="margin-top:14px;">
+  <div class="actuantes-hdr">
+    <div class="sec-dot" style="background:var(--teal);flex-shrink:0;"></div>
+    <span class="actuantes-lbl">Actuantes — completar en cada acta</span>
+  </div>
+  <div class="act-grid">
+    <div class="act-field">
+      <div class="act-field-lbl">Inspector/a de tránsito</div>
+      <input class="act-inp" id="act-inspector" placeholder="Apellido y nombre">
+    </div>
+    <div class="act-field">
+      <div class="act-field-lbl">Legajo inspector/a</div>
+      <input class="act-inp" id="act-legajo-insp" placeholder="N° legajo">
+    </div>
+    <div class="act-field">
+      <div class="act-field-lbl">Secretario/a</div>
+      <input class="act-inp" id="act-secretario" placeholder="Apellido y nombre">
+    </div>
+    <div class="act-field">
+      <div class="act-field-lbl">Legajo secretario/a</div>
+      <input class="act-inp" id="act-legajo-sec" placeholder="N° legajo">
+    </div>
+  </div>
+</div>
+
+<!-- DATOS DEL SINIESTRO -->
+<div class="sec red" style="margin-top:14px;">
+  <div class="sec-hdr">
+    <div class="sec-hdr-left">
+      <div class="sec-dot" style="background:var(--red);"></div>
+      <span class="sec-lbl" style="color:var(--red);">Datos del siniestro</span>
+    </div>
+  </div>
+  <div class="field">
+    <span class="field-lbl">Hora del siniestro</span>
+    <input class="field-inp short" type="time" id="f-hora">
+  </div>
+  <div class="field">
+    <span class="field-lbl">Fecha del siniestro</span>
+    <input class="field-inp short" type="date" id="f-fecha">
+  </div>
+  <div class="field col">
+    <span class="field-lbl">Lugar</span>
+    <input class="field-inp" type="text" id="f-lugar" placeholder="Calle, intersección, referencia...">
+  </div>
+  <div class="field">
+    <span class="field-lbl">Zona</span>
+    <div class="tg-wrap">
+      <div class="tg-btn" onclick="setMulti('zona','Urbana',this)">Urbana</div>
+      <div class="tg-btn" onclick="setMulti('zona','Sub Urbana',this)">Sub Urb.</div>
+      <div class="tg-btn" onclick="setMulti('zona','Rural',this)">Rural</div>
+    </div>
+  </div>
+  <div class="field">
+    <span class="field-lbl">Tipo de impacto</span>
+    <select class="sel-inp" id="f-impacto">
+      <option value="">-- seleccionar --</option>
+      <option>Choque</option><option>Atropello</option><option>Vuelco</option>
+      <option>Incendio</option><option>Caída</option><option>Otro</option>
+    </select>
+  </div>
+  <div class="field col">
+    <span class="field-lbl">Estado de la superficie vial</span>
+    <div class="chk-grid">
+      <div class="chk-item" onclick="toggleChk('superficie','Óptimo',this)"><div class="chk-box"></div><span class="chk-lbl">Óptimo</span></div>
+      <div class="chk-item" onclick="toggleChk('superficie','Bueno',this)"><div class="chk-box"></div><span class="chk-lbl">Bueno</span></div>
+      <div class="chk-item" onclick="toggleChk('superficie','Regular',this)"><div class="chk-box"></div><span class="chk-lbl">Regular</span></div>
+      <div class="chk-item" onclick="toggleChk('superficie','Malo',this)"><div class="chk-box"></div><span class="chk-lbl">Malo</span></div>
+      <div class="chk-item" onclick="toggleChk('superficie','Húmedo',this)"><div class="chk-box"></div><span class="chk-lbl">Húmedo</span></div>
+      <div class="chk-item" onclick="toggleChk('superficie','Seco',this)"><div class="chk-box"></div><span class="chk-lbl">Seco</span></div>
+    </div>
+  </div>
+  <div class="field col">
+    <span class="field-lbl">Situación climática y visibilidad</span>
+    <div class="chk-grid">
+      <div class="chk-item" onclick="toggleChk('clima','Día',this)"><div class="chk-box"></div><span class="chk-lbl">Día</span></div>
+      <div class="chk-item" onclick="toggleChk('clima','Noche',this)"><div class="chk-box"></div><span class="chk-lbl">Noche</span></div>
+      <div class="chk-item" onclick="toggleChk('clima','Despejado',this)"><div class="chk-box"></div><span class="chk-lbl">Despejado</span></div>
+      <div class="chk-item" onclick="toggleChk('clima','Lluvioso',this)"><div class="chk-box"></div><span class="chk-lbl">Lluvioso</span></div>
+      <div class="chk-item" onclick="toggleChk('clima','Niebla',this)"><div class="chk-box"></div><span class="chk-lbl">Niebla</span></div>
+      <div class="chk-item" onclick="toggleChk('clima','Luz Natural',this)"><div class="chk-box"></div><span class="chk-lbl">Luz Natural</span></div>
+      <div class="chk-item" onclick="toggleChk('clima','Luz Artificial',this)"><div class="chk-box"></div><span class="chk-lbl">Luz Artif.</span></div>
+    </div>
+  </div>
+  <div class="field">
+    <span class="field-lbl">¿Hubo heridos?</span>
+    <div class="tg-wrap">
+      <div class="tg-btn" onclick="setToggle('heridos','SI',this)">SI</div>
+      <div class="tg-btn" onclick="setToggle('heridos','NO',this)">NO</div>
+    </div>
+  </div>
+</div>
+
+<!-- VEHÍCULOS (dinámico) -->
+<div id="vehiculos-container"></div>
+<button class="btn-add-veh" onclick="agregarVehiculo()">+ Agregar vehículo</button>
+
+<!-- TESTIGOS -->
+<div class="sec amber">
+  <div class="sec-hdr">
+    <div class="sec-hdr-left">
+      <div class="sec-dot" style="background:var(--amber);"></div>
+      <span class="sec-lbl" style="color:var(--amber);">Testigos</span>
+    </div>
+    <button class="tg-btn" onclick="agregarTestigo()" style="font-size:11px;height:26px;">+ Agregar</button>
+  </div>
+  <div id="testigos-container">
+    <div class="field" style="justify-content:center;color:var(--text3);font-size:12px;font-family:var(--mono);">Sin testigos registrados</div>
+  </div>
+</div>
+
+<!-- OBSERVACIONES -->
+<div class="sec purple">
+  <div class="sec-hdr">
+    <div class="sec-hdr-left">
+      <div class="sec-dot" style="background:var(--purple);"></div>
+      <span class="sec-lbl" style="color:var(--purple);">Observaciones finales</span>
+    </div>
+  </div>
+  <div class="field col">
+    <span class="field-lbl">Reglas de tránsito infringidas</span>
+    <textarea class="field-inp" id="f-reglas" placeholder="Describir las infracciones observadas..." rows="2"></textarea>
+  </div>
+  <div class="field col">
+    <span class="field-lbl">Observaciones finales</span>
+    <textarea class="field-inp" id="f-obs" placeholder="Cualquier detalle adicional del siniestro..." rows="3"></textarea>
+  </div>
+</div>
+
+<!-- ACCIONES -->
+<div class="actions">
+  <button class="btn btn-save" onclick="guardarActa()">📋 Registrar acta</button>
+  <button class="btn btn-clear" onclick="limpiar()">Limpiar</button>
+  <button class="btn btn-export" onclick="exportCSV()">Exportar CSV</button>
+</div>
+
+<!-- LOG -->
+<div class="log-wrap" id="log-wrap" style="display:none;">
+  <div class="log-title">Actas registradas</div>
+  <div id="log-list"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var CKEY = 'siniestro_cfg2';
+var RKEY = 'siniestro_rows2';
+var cfg = {url:''};
+var rows = [];
+var vehCount = 0;
+var testigoCount = 0;
+var form = {zona:'', impacto:'', superficie:[], clima:[], heridos:'', vehiculos:[], testigos:[], reglas:'', obs:''};
+
+function init() {
+  try {
+    var c = localStorage.getItem(CKEY);
+    if (c) { cfg = JSON.parse(c); document.getElementById('cfg-url').value = cfg.url || ''; }
+  } catch(e) {}
+  mostrarEstadoConfig();
+
+  try {
+    var r = localStorage.getItem(RKEY);
+    if (r) rows = JSON.parse(r);
+  } catch(e) {}
+
+  setFechaHoraActual();
+  actualizarFecha();
+  setInterval(actualizarFecha, 30000);
+  renderStats();
+  renderLog();
+  agregarVehiculo();
+}
+
+function setFechaHoraActual() {
+  var now = new Date();
+  document.getElementById('f-fecha').value =
+    now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  document.getElementById('f-hora').value =
+    String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+}
+
+function actualizarFecha() {
+  var now = new Date();
+  var dias = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  var meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('hdr-date').textContent =
+    dias[now.getDay()]+' '+now.getDate()+' de '+meses[now.getMonth()]+
+    ' · '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+}
+
+function mostrarEstadoConfig() {
+  var tiene = cfg.url && cfg.url.length > 0;
+  document.getElementById('cfg-panel').style.display = tiene ? 'none' : 'block';
+  document.getElementById('cfg-mini').style.display = tiene ? 'flex' : 'none';
+}
+
+function guardarConfig() {
+  var url = document.getElementById('cfg-url').value.trim();
+  if (!url) { showToast('Ingresá la URL del script', 'err'); return; }
+  cfg = {url:url};
+  try { localStorage.setItem(CKEY, JSON.stringify(cfg)); } catch(e) {}
+  mostrarEstadoConfig();
+  showToast('URL guardada', 'ok');
+}
+
+function editarConfig() {
+  document.getElementById('cfg-panel').style.display = 'block';
+  document.getElementById('cfg-mini').style.display = 'none';
+}
+
+function setMulti(campo, val, el) {
+  form[campo] = val;
+  var siblings = el.parentNode.querySelectorAll('.tg-btn');
+  for (var i=0; i<siblings.length; i++) siblings[i].classList.remove('si');
+  el.classList.add('si');
+}
+
+function setToggle(campo, val, el) {
+  form[campo] = val;
+  var siblings = el.parentNode.querySelectorAll('.tg-btn');
+  for (var i=0; i<siblings.length; i++) { siblings[i].classList.remove('si'); siblings[i].classList.remove('no'); }
+  el.classList.add(val === 'SI' ? 'si' : 'no');
+}
+
+function toggleChk(campo, val, el) {
+  var box = el.querySelector('.chk-box');
+  var arr = form[campo];
+  var idx = arr.indexOf(val);
+  if (idx === -1) { arr.push(val); box.classList.add('on'); }
+  else { arr.splice(idx,1); box.classList.remove('on'); }
+}
+
+function getVeh(id) {
+  for (var i=0; i<form.vehiculos.length; i++) {
+    if (form.vehiculos[i].id === id) return form.vehiculos[i];
+  }
+  return null;
+}
+
+function agregarVehiculo() {
+  vehCount++;
+  var id = 'veh'+vehCount;
+  var num = vehCount;
+  form.vehiculos.push({
+    id:id, num:num,
+    dominio:'', propietario:'', dniProp:'', marca:'', modelo:'', tipo:'', motor:'', circulacion:'', danos:'',
+    cond_nombre:'', cond_dni:'', cond_nac:'', cond_edad:'', cond_ecivil:'',
+    cond_domicilio:'', cond_licencia:'', cond_lic_expedida:'', cond_aseguradora:'', cond_poliza:''
+  });
+
+  var html = '<div class="veh-block" id="block-'+id+'">';
+  html += '<div class="veh-hdr"><span class="veh-hdr-lbl">VEHÍCULO N° '+num+'</span>';
+  if (num > 1) html += '<button class="veh-del" onclick="eliminarVehiculo(\''+id+'\')">✕ Quitar</button>';
+  html += '</div>';
+  html += fi(id,'dominio','Dominio (patente)','text','ABC 123');
+  html += fi(id,'propietario','Propietario','text','Apellido y nombre');
+  html += fi(id,'dniProp','DNI propietario','text','');
+  html += fi(id,'marca','Marca','text','');
+  html += fi(id,'modelo','Modelo','text','');
+  html += fi(id,'tipo','Tipo de vehículo','text','Moto / Auto / Camioneta...');
+  html += fi(id,'motor','N° de motor','text','');
+  html += fi(id,'circulacion','Lugar y sentido de circulación','text','');
+  html += fi(id,'danos','Daños observados','text','');
+
+  // Bloque conductor con toggle "mismo propietario"
+  html += '<div class="cond-block">';
+  html += '<div style="padding:8px 14px 0;display:flex;align-items:center;justify-content:space-between;">';
+  html += '<div class="cond-lbl" style="padding:0;">👤 Conductor del vehículo '+num+'</div>';
+  html += '<button type="button" id="copiar-btn-'+id+'" onclick="copiarPropietario(\''+id+'\')" '+
+          'style="font-family:var(--mono);font-size:11px;background:var(--teal-dim);border:1px solid var(--teal);'+
+          'color:var(--teal);border-radius:5px;padding:4px 10px;cursor:pointer;white-space:nowrap;">'+
+          '= mismo propietario</button>';
+  html += '</div>';
+  html += fi(id,'cond_nombre','Apellido y nombre','text','');
+  html += fi(id,'cond_dni','DNI','text','');
+  html += fi(id,'cond_nac','Nacionalidad','text','');
+  html += fi(id,'cond_edad','Edad','number','');
+  html += fs(id,'cond_ecivil','Estado civil',['','Casado/a','Soltero/a','Viudo/a','Otro']);
+  html += fi(id,'cond_domicilio','Domicilio','text','');
+  html += fi(id,'cond_licencia','Licencia N°','text','');
+  html += fi(id,'cond_lic_expedida','Licencia expedida por','text','');
+  html += fi(id,'cond_aseguradora','Asegurado en','text','');
+  html += fi(id,'cond_poliza','Póliza N°','text','');
+  html += '</div></div>';
+
+  var tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  document.getElementById('vehiculos-container').appendChild(tmp.firstChild);
+}
+
+function fi(vid, campo, lbl, tipo, ph) {
+  return '<div class="field col" style="gap:4px;">'+
+    '<span class="field-lbl" style="font-size:12px;color:var(--text2);">'+lbl+'</span>'+
+    '<input id="inp-'+vid+'-'+campo+'" class="field-inp" type="'+tipo+'" placeholder="'+ph+'" oninput="setVehField(\''+vid+'\',\''+campo+'\',this.value)">'+
+    '</div>';
+}
+
+function copiarPropietario(vid) {
+  var v = getVeh(vid);
+  if (!v) return;
+  var mapeo = [['propietario','cond_nombre'],['dniProp','cond_dni']];
+  mapeo.forEach(function(par) {
+    var val = v[par[0]] || '';
+    v[par[1]] = val;
+    var inp = document.getElementById('inp-'+vid+'-'+par[1]);
+    if (inp) inp.value = val;
+  });
+  var btn = document.getElementById('copiar-btn-'+vid);
+  if (btn) {
+    btn.textContent = '\u2713 copiado';
+    btn.style.background = 'var(--green-dim)';
+    btn.style.borderColor = 'var(--green)';
+    btn.style.color = 'var(--green)';
+    setTimeout(function() {
+      btn.textContent = '= mismo propietario';
+      btn.style.background = 'var(--teal-dim)';
+      btn.style.borderColor = 'var(--teal)';
+      btn.style.color = 'var(--teal)';
+    }, 2000);
+  }
+  showToast('Datos copiados al conductor', 'ok');
+}
+
+function fs(vid, campo, lbl, opciones) {
+  var opts = opciones.map(function(o){ return '<option>'+o+'</option>'; }).join('');
+  return '<div class="field">'+
+    '<span class="field-lbl" style="font-size:12px;color:var(--text2);">'+lbl+'</span>'+
+    '<select class="sel-inp" onchange="setVehField(\''+vid+'\',\''+campo+'\',this.value)">'+opts+'</select>'+
+    '</div>';
+}
+
+function setVehField(vid, campo, val) {
+  var v = getVeh(vid);
+  if (v) v[campo] = val;
+}
+
+function eliminarVehiculo(id) {
+  var b = document.getElementById('block-'+id);
+  if (b) b.parentNode.removeChild(b);
+  form.vehiculos = form.vehiculos.filter(function(v){ return v.id !== id; });
+}
+
+function agregarTestigo() {
+  testigoCount++;
+  var id = 't'+testigoCount;
+  var num = testigoCount;
+  form.testigos.push({id:id, num:num, nombre:'', dni:'', domicilio:''});
+
+  var html = '<div id="block-'+id+'" style="border-bottom:1px solid var(--border);">';
+  html += '<div style="padding:8px 14px;display:flex;align-items:center;justify-content:space-between;">';
+  html += '<span style="font-family:var(--mono);font-size:10px;color:var(--amber);text-transform:uppercase;">Testigo '+num+'</span>';
+  html += '<button class="veh-del" style="background:var(--amber-dim);border-color:var(--amber);color:var(--amber);" onclick="eliminarTestigo(\''+id+'\')">✕</button></div>';
+  html += '<div class="field col" style="gap:4px;"><span class="field-lbl" style="font-size:12px;color:var(--text2);">Apellido y nombre</span><input class="field-inp" oninput="setTestigoField(\''+id+'\',\'nombre\',this.value)"></div>';
+  html += '<div class="field col" style="gap:4px;"><span class="field-lbl" style="font-size:12px;color:var(--text2);">DNI</span><input class="field-inp" oninput="setTestigoField(\''+id+'\',\'dni\',this.value)"></div>';
+  html += '<div class="field col" style="gap:4px;"><span class="field-lbl" style="font-size:12px;color:var(--text2);">Domicilio</span><input class="field-inp" oninput="setTestigoField(\''+id+'\',\'domicilio\',this.value)"></div>';
+  html += '</div>';
+
+  var container = document.getElementById('testigos-container');
+  var ph = container.querySelector('[style*="justify-content:center"]');
+  if (ph) container.innerHTML = '';
+  var tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  container.appendChild(tmp.firstChild);
+}
+
+function setTestigoField(id, campo, val) {
+  for (var i=0; i<form.testigos.length; i++) {
+    if (form.testigos[i].id === id) { form.testigos[i][campo] = val; return; }
+  }
+}
+
+function eliminarTestigo(id) {
+  var b = document.getElementById('block-'+id);
+  if (b) b.parentNode.removeChild(b);
+  form.testigos = form.testigos.filter(function(t){ return t.id !== id; });
+  if (form.testigos.length === 0) {
+    document.getElementById('testigos-container').innerHTML =
+      '<div class="field" style="justify-content:center;color:var(--text3);font-size:12px;font-family:var(--mono);">Sin testigos registrados</div>';
+  }
+}
+
+function guardarActa() {
+  var now = new Date();
+  var n = rows.length + 1;
+
+  // Actuantes: se leen del panel pero NO se limpian
+  var inspector  = document.getElementById('act-inspector').value.trim() || '--';
+  var legajoInsp = document.getElementById('act-legajo-insp').value.trim() || '--';
+  var secretario = document.getElementById('act-secretario').value.trim() || '--';
+  var legajoSec  = document.getElementById('act-legajo-sec').value.trim() || '--';
+
+  var hora   = document.getElementById('f-hora').value;
+  var fecha  = document.getElementById('f-fecha').value;
+  var lugar  = document.getElementById('f-lugar').value.trim() || '--';
+  var impacto = document.getElementById('f-impacto').value || '--';
+  var reglas = document.getElementById('f-reglas').value.trim() || '--';
+  var obs    = document.getElementById('f-obs').value.trim() || '--';
+
+  var row = {
+    n:n,
+    fecha_registro: String(now.getDate()).padStart(2,'0')+'/'+(now.getMonth()+1)+'/'+now.getFullYear(),
+    hora_registro:  String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'),
+    inspector:inspector, legajo_insp:legajoInsp,
+    secretario:secretario, legajo_sec:legajoSec,
+    hora_siniestro:hora, fecha_siniestro:fecha,
+    lugar:lugar, zona:form.zona||'--', impacto:impacto,
+    superficie:form.superficie.join(' / ')||'--',
+    clima:form.clima.join(' / ')||'--',
+    heridos:form.heridos||'--',
+    cant_vehiculos:form.vehiculos.length,
+    vehiculos:JSON.stringify(form.vehiculos),
+    cant_testigos:form.testigos.length,
+    testigos:JSON.stringify(form.testigos),
+    reglas:reglas, observaciones:obs
+  };
+
+  rows.push(row);
+  try { localStorage.setItem(RKEY, JSON.stringify(rows)); } catch(e) {}
+
+  if (cfg.url) {
+    try {
+      fetch(cfg.url, {method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(row)});
+    } catch(e) {}
+  }
+
+  renderStats();
+  renderLog();
+  limpiar();
+  showToast('Acta #'+n+' registrada', 'ok');
+}
+
+function limpiar() {
+  // Resetea el siniestro, vehículos, testigos y observaciones
+  // Los campos de actuantes (inspector, secretario, legajos) NO se tocan
+  form = {zona:'', impacto:'', superficie:[], clima:[], heridos:'', vehiculos:[], testigos:[], reglas:'', obs:''};
+  vehCount = 0; testigoCount = 0;
+
+  setFechaHoraActual();
+  document.getElementById('f-lugar').value = '';
+  document.getElementById('f-impacto').value = '';
+  document.getElementById('f-reglas').value = '';
+  document.getElementById('f-obs').value = '';
+
+  document.querySelectorAll('.chk-box').forEach(function(b){ b.classList.remove('on'); });
+  document.querySelectorAll('.tg-btn').forEach(function(b){ b.classList.remove('si'); b.classList.remove('no'); });
+
+  document.getElementById('vehiculos-container').innerHTML = '';
+  document.getElementById('testigos-container').innerHTML =
+    '<div class="field" style="justify-content:center;color:var(--text3);font-size:12px;font-family:var(--mono);">Sin testigos registrados</div>';
+
+  agregarVehiculo();
+}
+
+function renderStats() {
+  var heridos = 0, totalVeh = 0;
+  for (var i=0; i<rows.length; i++) {
+    if (rows[i].heridos === 'SI') heridos++;
+    totalVeh += (rows[i].cant_vehiculos || 0);
+  }
+  document.getElementById('st-total').textContent = rows.length;
+  document.getElementById('st-heridos').textContent = heridos;
+  document.getElementById('st-veh').textContent = totalVeh;
+}
+
+function renderLog() {
+  var wrap = document.getElementById('log-wrap');
+  var list = document.getElementById('log-list');
+  if (rows.length === 0) { wrap.style.display='none'; return; }
+  wrap.style.display = 'block';
+  var html = '';
+  for (var i=rows.length-1; i>=0; i--) {
+    var r = rows[i];
+    var chips = '';
+    chips += '<span class="chip">#'+r.n+'</span>';
+    chips += '<span class="chip">'+r.hora_siniestro+'</span>';
+    chips += '<span class="chip">'+r.fecha_siniestro+'</span>';
+    if (r.zona !== '--') chips += '<span class="chip b">'+r.zona+'</span>';
+    if (r.impacto !== '--') chips += '<span class="chip r">'+r.impacto.toUpperCase()+'</span>';
+    if (r.heridos === 'SI') chips += '<span class="chip r">HERIDOS</span>';
+    chips += '<span class="chip">'+r.cant_vehiculos+' veh.</span>';
+    if (r.cant_testigos > 0) chips += '<span class="chip a">'+r.cant_testigos+' test.</span>';
+    if (r.inspector !== '--') chips += '<span class="chip t">'+r.inspector+'</span>';
+    if (r.secretario !== '--') chips += '<span class="chip t">'+r.secretario+'</span>';
+    html += '<div class="log-item"><div class="chips">'+chips+'</div><button class="del-btn" onclick="borrar('+r.n+')">✕</button></div>';
+  }
+  list.innerHTML = html;
+}
+
+function borrar(n) {
+  rows = rows.filter(function(r){ return r.n !== n; });
+  try { localStorage.setItem(RKEY, JSON.stringify(rows)); } catch(e) {}
+  renderStats();
+  renderLog();
+}
+
+function exportCSV() {
+  if (rows.length === 0) { showToast('No hay registros aún', 'err'); return; }
+  var hdrs = [
+    'N','Fecha Registro','Hora Registro','Inspector','Legajo Inspector',
+    'Secretario','Legajo Secretario','Hora Siniestro','Fecha Siniestro',
+    'Lugar','Zona','Tipo Impacto','Estado Superficie','Clima Visibilidad','Heridos','Cant. Vehículos',
+    'Veh1 Dominio','Veh1 Propietario','Veh1 DNI Prop','Veh1 Marca','Veh1 Modelo','Veh1 Tipo','Veh1 Motor','Veh1 Circulacion','Veh1 Danos',
+    'Cond1 Nombre','Cond1 DNI','Cond1 Nac','Cond1 Edad','Cond1 EstCivil','Cond1 Domicilio','Cond1 Licencia','Cond1 LicExpedida','Cond1 Aseguradora','Cond1 Poliza',
+    'Veh2 Dominio','Veh2 Propietario','Veh2 DNI Prop','Veh2 Marca','Veh2 Modelo','Veh2 Tipo','Veh2 Motor','Veh2 Circulacion','Veh2 Danos',
+    'Cond2 Nombre','Cond2 DNI','Cond2 Nac','Cond2 Edad','Cond2 EstCivil','Cond2 Domicilio','Cond2 Licencia','Cond2 LicExpedida','Cond2 Aseguradora','Cond2 Poliza',
+    'Test1 Nombre','Test1 DNI','Test1 Domicilio',
+    'Test2 Nombre','Test2 DNI','Test2 Domicilio',
+    'Reglas Infringidas','Observaciones'
+  ];
+  var lines = [hdrs.join(',')];
+  for (var i=0; i<rows.length; i++) {
+    var r = rows[i];
+    var vehs=[]; try{vehs=JSON.parse(r.vehiculos);}catch(e){}
+    var tests=[]; try{tests=JSON.parse(r.testigos);}catch(e){}
+    function vf(idx,c){return vehs[idx]?(vehs[idx][c]||'--'):'--';}
+    function tf(idx,c){return tests[idx]?(tests[idx][c]||'--'):'--';}
+    var vals=[
+      r.n,r.fecha_registro,r.hora_registro,r.inspector,r.legajo_insp,
+      r.secretario,r.legajo_sec,r.hora_siniestro,r.fecha_siniestro,
+      r.lugar,r.zona,r.impacto,r.superficie,r.clima,r.heridos,r.cant_vehiculos,
+      vf(0,'dominio'),vf(0,'propietario'),vf(0,'dniProp'),vf(0,'marca'),vf(0,'modelo'),vf(0,'tipo'),vf(0,'motor'),vf(0,'circulacion'),vf(0,'danos'),
+      vf(0,'cond_nombre'),vf(0,'cond_dni'),vf(0,'cond_nac'),vf(0,'cond_edad'),vf(0,'cond_ecivil'),vf(0,'cond_domicilio'),vf(0,'cond_licencia'),vf(0,'cond_lic_expedida'),vf(0,'cond_aseguradora'),vf(0,'cond_poliza'),
+      vf(1,'dominio'),vf(1,'propietario'),vf(1,'dniProp'),vf(1,'marca'),vf(1,'modelo'),vf(1,'tipo'),vf(1,'motor'),vf(1,'circulacion'),vf(1,'danos'),
+      vf(1,'cond_nombre'),vf(1,'cond_dni'),vf(1,'cond_nac'),vf(1,'cond_edad'),vf(1,'cond_ecivil'),vf(1,'cond_domicilio'),vf(1,'cond_licencia'),vf(1,'cond_lic_expedida'),vf(1,'cond_aseguradora'),vf(1,'cond_poliza'),
+      tf(0,'nombre'),tf(0,'dni'),tf(0,'domicilio'),
+      tf(1,'nombre'),tf(1,'dni'),tf(1,'domicilio'),
+      r.reglas,r.observaciones
+    ];
+    lines.push(vals.map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(','));
+  }
+  var blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url; a.download='siniestros_viales.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV exportado','ok');
+}
+
+function showToast(msg, tipo) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show '+(tipo||'');
+  setTimeout(function(){ t.className='toast'; }, 2500);
+}
+
+init();
+</script>
+</body>
+</html>
